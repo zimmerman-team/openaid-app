@@ -1,0 +1,35 @@
+
+<ion-view title="Activities ({{activities.length}}/{{totalCount}})" hide-back-button="true">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon icon ion-search" ng-click="showSearch()">
+    </button>
+  </ion-nav-buttons>
+
+  <ion-content>
+          <div ng-if="activities.length == 0" class="card">
+              <div class="item item-text-wrap text-center">
+                  <i class="icon ion-ios7-search-strong oip-icon-center"></i>
+                  <p>
+                  There are no results. Check your filters.
+                  </p>
+                  <p ng-if="search">
+                      You have a search query ("{{search}}") enabled. This could impact results.
+                  </p>
+              </div>
+          </div>
+    <div class="list">
+      <a class="item my-item"
+           collection-repeat="activity in activities"
+           collection-item-width="'100%'"
+           collection-item-height="60"
+              ng-href="#/menu/activity/{{activity.id}}">
+        {{activity.titles[0].title}}
+      </a>
+    </div>
+    <ion-infinite-scroll
+            ng-if="moreDataCanBeLoaded()"
+            on-infinite="loadMoreActivities()"
+            distance="30%">
+    </ion-infinite-scroll>
+  </ion-content>
+</ion-view>

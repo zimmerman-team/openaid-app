@@ -1,0 +1,47 @@
+<ion-view title="Filters" hide-back-button="true">
+    <ion-content>
+        <div class="list">
+            <div ng-if="acts > 0" class="item">
+                <h2>{{acts}} activities</h2>
+                <small ng-if="search">You also have a search query ("{{search}}") enabled.</small>
+            </div>
+            <div ng-if="!acts" class="item">
+                <h2>No activities found with the current filters. </h2>
+                <small ng-if="search">You have a search query ("{{search}}") enabled.</small>
+            </div>
+
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Region
+                </div>
+                <select name='region' ng-model="region" ng-change="updateRegion(region)">
+                    <option value="No filter">No filter</option>
+                    <option  ng-repeat="region in regions"
+                             ng-value="region.name">{{ region.name }}</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Country
+                </div>
+                <select name='country' ng-model="country" ng-change="updateCountry(country)">
+                    <option value="No filter">No filter</option>
+                    <option  ng-repeat="country in countries"
+                             ng-value="country.name">{{ country.name }}</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Sector
+                </div>
+                <select name='sector' ng-model="sector" ng-change="updateSector(sector)">
+                    <option value="No filter">No filter</option>
+                    <option  ng-repeat="sector in sectors"
+                             ng-value="sector.name">{{ sector.name }}</option>
+                </select>
+            </label>
+
+
+        </div>
+    </ion-content>
+</ion-view>
