@@ -1,0 +1,35 @@
+<ion-side-menus>
+    <fade-bar></fade-bar>
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-positive"animation="no-animation">
+            <ion-nav-back-button class="button-icon ion-arrow-left-c">
+            </ion-nav-back-button>
+        </ion-nav-bar>
+        <ion-nav-buttons side="left">
+            <button class="button button-icon button-clear ion-navicon" ng-hide="hideNavButton" ng-click="toggleLeft()">
+            </button>
+        </ion-nav-buttons>
+        <ion-nav-view animation="slide-left-right" name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+
+    <ion-side-menu side="left" width="200">
+        <ion-header-bar class="bar-stable" fade-header>
+            <h1 class="title">Menu</h1>
+        </ion-header-bar>
+        <ion-content has-bouncing="false">
+            <ul class="list">
+                <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
+                <a href="#/menu/home" class="item item-icon-left" menu-close>
+                    <i class="icon ion-home"></i>
+                    Home</a>
+                <a href="#/menu/activities" class="item item-icon-left" menu-close>
+                    <i class="icon ion-stats-bars"></i>Activities</a>
+                <a href="#/menu/filter" class="item item-icon-left" menu-close>
+                    <i class="icon ion-ios7-settings-strong"></i>
+                    Filter</a>
+                <a href="#/menu/about" class="item item-icon-left" menu-close>
+                    <i class="icon ion-ios7-information"></i>About</a>
+            </ul>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

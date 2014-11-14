@@ -1,0 +1,53 @@
+<ion-view title="{{activity.titles[0].title}}">
+  <ion-content has-header="true" has-bouncing="false" padding="true" on-swipe-right="onSwipe()">
+    <div class="list card">
+      <div class="item item-divider">
+        {{activity.titles[0].title}}
+      </div>
+      <div class="item item-text-wrap">
+        {{activity.descriptions[0].description}}
+      </div>
+      <div class="item item-text-wrap">
+      <h2>Total budget</h2>
+      <p>{{activity.total_budget}}</p>
+        </div>
+
+      <!--Affected countries-->
+      <div ngIf="activity.countries.length">
+        <div class="item item-divider">
+          <ng-pluralize count="activity.countries.length"
+                        when="{'0': 'No country attached',
+                              '1': 'Affected country',
+                              'other': 'Affected countries'}">
+          </ng-pluralize>
+        </div>
+
+        <ion-item class="item item-avatar" ng-repeat="country in activity.countries">
+          {{country.name}}
+        </ion-item>
+      </div>
+
+      <!--Participating organisations-->
+      <div class="item item-divider">
+        Participating organisations
+      </div>
+      <ion-item ng-repeat="organisation in activity.participating_organisations">
+        {{organisation.name}}
+      </ion-item>
+    </div>
+
+    <div class="list card">
+      <div class="item item-divider">
+        IATI details
+      </div>
+      <div class="item item-text-wrap">
+        <h2>{{activity.iati_identifier}}</h2>
+        <p>IATI identifier</p>
+      </div>
+      <div class="item item-text-wrap">
+        <h2>Last updated</h2>
+        <p>{{activity.last_updated_datetime}}</p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

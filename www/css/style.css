@@ -1,0 +1,49 @@
+/* Empty. Add your own CSS if you like */
+.list .my-item.item {
+    left: 0;
+    right: 0;
+    height: 60px;
+    padding-top: 20px;
+    padding-bottom: 0;
+    border-bottom: 0; /* fixes thick non-ionic like border */
+}
+
+.fade-bar {
+    height: 20px;
+    width: 100%;
+    position: fixed;
+    z-index: 9999;
+    opacity: 1;
+    background-color: #000;
+}
+
+.back-bar {
+    height: 100%;
+    width: 40%;
+    position: fixed;
+    z-index: 9999;
+    opacity: 1;
+    background-color: #111111;
+}
+
+.oip-icon-center {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 10px;
+
+}
+
+svg {
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+}
+
+rect {
+    fill: #ddd;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #fff;
+}
