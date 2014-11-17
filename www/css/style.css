@@ -10,10 +10,9 @@
 
 .fade-bar {
     height: 20px;
-    width: 100%;
+    width: 0;
     position: fixed;
     z-index: 9999;
-    opacity: 1;
     background-color: #000;
 }
 

@@ -318,7 +318,7 @@ angular.module('starter.controllers', ['ionic'])
                             return $ionicSideMenuDelegate.getOpenRatio();
                         }, function (ratio) {
                             // Set the transparency of the fade bar
-                            $element[0].style.opacity = Math.abs(ratio);
+                            $element[0].style.width =  (200 * Math.abs(ratio))+"px";
                         });
                     });
                 }
