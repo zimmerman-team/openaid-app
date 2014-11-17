@@ -14,7 +14,7 @@ angular.module('starter.services', ['ngResource'])
  */
     .factory('Activities', ['$http','$resource', function ($http, $resource) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/activities/:Id/?format=json",
+            "http://dev.oipa.openaidsearch.org/api/v3/activities/:Id/?format=json",
             {Id: "@Id"},
             {
                 query: {
@@ -29,7 +29,7 @@ angular.module('starter.services', ['ngResource'])
                 meta: {
                     method: 'GET',
                     params: {
-                        'select_fields': ""
+                        'select_fields': "id"
                     },
                     transformResponse: $http.defaults.transformResponse.concat([
                         function (data, headersGetter) {
@@ -47,7 +47,7 @@ angular.module('starter.services', ['ngResource'])
     }])
     .factory('Regions', ['$http','$resource', function ($http, $resource) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/regions/?format=json",
+            "http://dev.oipa.openaidsearch.org/api/v3/regions/?format=json",
             {limit: 0},
             {
                 all: {
@@ -64,7 +64,7 @@ angular.module('starter.services', ['ngResource'])
     }])
     .factory('Countries', ['$http','$resource', function ($http, $resource) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/countries/?format=json",
+            "http://dev.oipa.openaidsearch.org/api/v3/countries/?format=json",
             {limit: 0},
             {
                 all: {
@@ -81,7 +81,7 @@ angular.module('starter.services', ['ngResource'])
     }])
     .factory('Sectors', ['$http','$resource', function ($http, $resource) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/sectors/?format=json",
+            "http://dev.oipa.openaidsearch.org/api/v3/sectors/?format=json",
             {limit: 0},
             {
                 all: {
@@ -96,9 +96,9 @@ angular.module('starter.services', ['ngResource'])
             }
         );
     }])
-    .factory('FilterOptions', ['$http','$resource', function ($http, $resource) {
-        return $resource(
-            "http://oipa.vpl.me/api/v3/activity-filter-options/?format=json",
+    .factory('FilterOptions', ['$http','$resource','LocalStorage', function ($http, $resource, LocalStorage) {
+        var resource = $resource(
+            "http://dev.oipa.openaidsearch.org/api/v3/activity-filter-options/?format=json",
             {},
             {
                 all: {
@@ -107,6 +107,34 @@ angular.module('starter.services', ['ngResource'])
                 }
             }
         );
+        var filterOptions;
+
+        return {
+            get: function(func){
+                var needLoad = false;
+
+                if(!filterOptions){
+                    var cachedFilterOptions = LocalStorage.getObject("filterOptions");
+
+                    if (Object.keys(cachedFilterOptions).length !== 0){
+                        filterOptions = cachedFilterOptions;
+                    }
+                    else {
+                        needLoad = true;
+                        filterOptions = resource.all(function(){
+                            LocalStorage.setObject("filterOptions",filterOptions);
+                            func();
+                        });
+                    }
+                }
+                if(!needLoad)
+                {
+                    setTimeout(func, 50);
+                }
+                return filterOptions;
+            }
+        };
+
     }])
     .factory('LocalStorage', ['$window', function($window) {
         return {

@@ -50,6 +50,7 @@ angular.module('starter.controllers', ['ionic'])
     })
     .controller('ActivitiesCtrl', function ($scope, $ionicModal, Activities, Regions, LocalStorage) {
         $scope.hideBackButton = true;
+
         $scope.queryParams = {
             limit: 50
         };
@@ -81,7 +82,7 @@ angular.module('starter.controllers', ['ionic'])
         $scope.activities = [];
 
         $scope.loadActivities = function(queryParams) {
-
+            $scope.loadingFinished = false;
             $scope.meta = Activities.meta(queryParams,function(){
                 $scope.totalCount = $scope.meta.total_count;
                 queryParams.offset = $scope.activities.length;
@@ -99,6 +100,7 @@ angular.module('starter.controllers', ['ionic'])
                 // on complete
                 // $scope.activities array is appended with new entries once data has been loaded by ngresource
                 $scope.activities = $scope.activities.concat(results);
+                $scope.loadingFinished = true;
             });
         };
 
@@ -119,6 +121,14 @@ angular.module('starter.controllers', ['ionic'])
             $scope.hideSearch();
         });
 
+        $scope.resetFilters = function (){
+            LocalStorage.set("filterRegion","");
+            LocalStorage.set("filterSearch","");
+            LocalStorage.set("filterCountry","");
+            LocalStorage.set("filterSector","");
+            $scope.reloadActivities();
+        };
+
         $scope.reloadActivities = function () {
             $scope.activities = [];
             $scope.currentIndex = 0;
@@ -126,7 +136,7 @@ angular.module('starter.controllers', ['ionic'])
             $scope.queryParams.offset = 0;
             updateQueryParams();
             $scope.loadActivities($scope.queryParams);
-        }
+        };
         $scope.moreDataCanBeLoaded = function (){
             return $scope.activities.length < $scope.meta.total_count;
         }
@@ -164,12 +174,9 @@ angular.module('starter.controllers', ['ionic'])
         setTimeout(function() {
             if(!loaded){
                     $ionicLoading.hide();
-                    var alertPopup = $ionicPopup.alert({
+                    $ionicPopup.alert({
                     title: 'Connection failed',
                     template: 'Can not connect to server'
-                });
-                alertPopup.then(function(res) {
-                    console.log('Thank you for not eating my delicious ice cream cone');
                 });
             }
         }, 3000)
@@ -213,41 +220,48 @@ angular.module('starter.controllers', ['ionic'])
             })
         };
 
+
+
         getNumberActivities();
 
         // On startup, get all filterOptions from the API, add
         // them to the scope and then select the one in memory if applicable
-        var filterOptions = FilterOptions.all({}, function () {
+        var filterOptions = FilterOptions.get(function () {
+            $scope.filterForm = {
+                region: "No filter",
+                country: "No filter",
+                sector: "No filter"
+            };
+
             $scope.regions = filterOptions.regions;
             $scope.countries = filterOptions.countries;
             $scope.sectors = filterOptions.sectors;
 
             var region = LocalStorage.get('filterRegion');
             if(region){
-                $scope.region = filterOptions.regions[region].name;
-            }
-            else{
-                $scope.region = "No filter";
+                $scope.filterForm.region = filterOptions.regions[region].name;
             }
 
             var country = LocalStorage.get('filterCountry');
             if(country){
-                $scope.country = filterOptions.countries[country].name;
-            }
-            else {
-                $scope.country = "No filter";
+                $scope.filterForm.country = filterOptions.countries[country].name;
             }
 
             var sector = LocalStorage.get('filterSector');
-            console.log("sector: " + sector);
             if(sector){
-                $scope.sector = filterOptions.sectors[sector].name;
-            }
-            else{
-                $scope.sector = "No filter";
+                $scope.filterForm.sector = filterOptions.sectors[sector].name;
             }
         });
 
+        $scope.resetFilters = function(){
+            $scope.filterForm.region = "No filter";
+            LocalStorage.set("filterRegion","");
+            $scope.filterForm.country = "No filter";
+            LocalStorage.set("filterCountry","");
+            $scope.filterForm.sector = "No filter";
+            LocalStorage.set("filterSector","");
+            getNumberActivities();
+        };
 
         // Converts name to code (e.g. Netherlands to NL)
         // or returns an empty string indicating that no filter is applied.
