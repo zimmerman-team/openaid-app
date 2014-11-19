@@ -20,6 +20,14 @@
                   </button>
               </div>
           </div>
+      <div ng-if="!loadingFinished" class="card">
+          <div class="item item-text-wrap text-center">
+             <i class="icon ion-loading-c oip-icon-center"></i>
+              <p>
+                  Loading. Please wait.
+              </p>
+          </div>
+      </div>
     <div class="list">
       <a class="item my-item"
            collection-repeat="activity in activities"

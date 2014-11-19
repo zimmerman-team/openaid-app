@@ -40,13 +40,13 @@
 }
 
 svg {
-    font: 10px sans-serif;
+    /*font: 10px sans-serif;*/
     shape-rendering: crispEdges;
 }
 
-rect {
-    fill: #ddd;
-}
+/*rect {*/
+    /*fill: #2b205a;*/
+/*}*/
 
 .axis path,
 .axis line {

@@ -1,6 +1,15 @@
-angular.module('starter.controllers', ['ionic'])
+angular.module('openaid.controllers', ['openaid.d3'])
+    .controller('AboutCtrl', function($scope) {
+        $scope.data = [
+            {name: "Greg", score: 98},
+            {name: "Ari", score: 96},
+            {name: 'Q', score: 75},
+            {name: "Loser", score: 48}
+        ];
+    })
     .controller('MainCtrl', function($rootScope, $scope, $ionicSideMenuDelegate, LocalStorage) {
         $scope.hideBackButton = true;
+        $scope.hideNavButton = false;
 
         $scope.toggleLeft = function() {
             $ionicSideMenuDelegate.toggleLeft();
@@ -77,24 +86,25 @@ angular.module('starter.controllers', ['ionic'])
             if (search){
                 $scope.queryParams.query = search;
             }
+
+            $scope.meta = Activities.meta($scope.queryParams,function(){
+                $scope.totalCount = $scope.meta.total_count;
+            });
         };
 
         $scope.activities = [];
 
         $scope.loadActivities = function(queryParams) {
             $scope.loadingFinished = false;
-            $scope.meta = Activities.meta(queryParams,function(){
-                $scope.totalCount = $scope.meta.total_count;
-                queryParams.offset = $scope.activities.length;
+            queryParams.offset = $scope.activities.length;
 
-                var remainingActivities = $scope.totalCount-$scope.activities.length;
+            var remainingActivities = $scope.totalCount-$scope.activities.length;
 
-                if (remainingActivities < 50){
-                    queryParams.limit = remainingActivities;
-                } else {
-                    queryParams.limit = 50;
-                }
-            });
+            if (remainingActivities < 50){
+                $scope.queryParams.limit = remainingActivities;
+            } else {
+                $scope.queryParams.limit = 50;
+            }
 
             var results = Activities.query(queryParams, function () {
                 // on complete
@@ -112,7 +122,7 @@ angular.module('starter.controllers', ['ionic'])
         });
 
         $scope.loadMoreActivities = function () {
-            $scope.queryParams.offset = $scope.currentIndex;
+            $scope.queryParams.offset = $scope.activities.length;
             $scope.loadActivities($scope.queryParams);
             $scope.$broadcast('scroll.infiniteScrollComplete');
         };
@@ -140,7 +150,6 @@ angular.module('starter.controllers', ['ionic'])
         $scope.moreDataCanBeLoaded = function (){
             return $scope.activities.length < $scope.meta.total_count;
         }
-
     })
     .controller('ActivityDetailCtrl', function ($rootScope, $scope, $stateParams, $ionicNavBarDelegate, $ionicSideMenuDelegate, Activities, $ionicPopup, $ionicLoading) {
         $scope.hideBackButton = false;
@@ -215,8 +224,9 @@ angular.module('starter.controllers', ['ionic'])
         // by retrieving the meta data.
         var getNumberActivities = function(){
             var params = updateQueryParams();
-            var meta = Activities.meta(params, function(){
-               $scope.acts = meta.total_count;
+            var count = Activities.meta(params, function(){
+                console.log(count);
+               $scope.acts = count.total_count;
             })
         };
 

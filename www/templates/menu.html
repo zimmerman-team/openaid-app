@@ -6,7 +6,7 @@
             </ion-nav-back-button>
         </ion-nav-bar>
         <ion-nav-buttons side="left">
-            <button class="button button-icon button-clear ion-navicon" ng-hide="hideNavButton" ng-click="toggleLeft()">
+            <button class="button button-icon button-clear ion-navicon" ng-if="!hideNavButton" ng-click="toggleLeft()">
             </button>
         </ion-nav-buttons>
         <ion-nav-view animation="slide-left-right" name="menuContent"></ion-nav-view>

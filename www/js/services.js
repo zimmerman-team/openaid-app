@@ -7,7 +7,7 @@ var tastypieDataTransformer = function ($http) {
     ])
 };
 
-angular.module('starter.services', ['ngResource'])
+angular.module('openaid.services', ['ngResource'])
 
 /**
  * A simple example service that returns some data.
@@ -22,14 +22,15 @@ angular.module('starter.services', ['ngResource'])
                     isArray: true,
                     cache: true,
                     params: {
-                        'select_fields': "id,titles"
+                        'select_fields': "id,titles",
+                        count: false
                     },
                     transformResponse: tastypieDataTransformer($http)
                 },
                 meta: {
                     method: 'GET',
                     params: {
-                        'select_fields': "id"
+                        'select_fields': "none"
                     },
                     transformResponse: $http.defaults.transformResponse.concat([
                         function (data, headersGetter) {
@@ -92,6 +93,18 @@ angular.module('starter.services', ['ngResource'])
                 },
                 get: {
                     method: 'GET'
+                }
+            }
+        );
+    }])
+    .factory('ActivityCount', ['$http','$resource', function ($http, $resource) {
+        return $resource(
+            "http://dev.oipa.openaidsearch.org/api/v3/activity-count/?format=json",
+            {},
+            {
+                get: {
+                    method: 'GET',
+                    cache: true
                 }
             }
         );
