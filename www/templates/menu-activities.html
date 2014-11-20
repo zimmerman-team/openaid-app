@@ -1,8 +1,13 @@
 
-<ion-view title="Activities ({{activities.length}}/{{totalCount}})" hide-back-button="true">
+<ion-view title="Activities" hide-back-button="true">
+    <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" ng-click="toggleLeft()">
+        </button>
+    </ion-nav-buttons>
   <ion-nav-buttons side="right">
     <button class="button button-icon icon ion-search" ng-click="showSearch()">
     </button>
+
   </ion-nav-buttons>
 
   <ion-content>
@@ -20,7 +25,7 @@
                   </button>
               </div>
           </div>
-      <div ng-if="!loadingFinished" class="card">
+      <div ng-if="!loadingFinished && activities.length == 0" class="card">
           <div class="item item-text-wrap text-center">
              <i class="icon ion-loading-c oip-icon-center"></i>
               <p>

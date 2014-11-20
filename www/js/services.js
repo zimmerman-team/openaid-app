@@ -115,6 +115,7 @@ angular.module('openaid.services', ['ngResource'])
             {},
             {
                 get: {
+                    isArray: true,
                     method: 'GET',
                     cache: true
                 }

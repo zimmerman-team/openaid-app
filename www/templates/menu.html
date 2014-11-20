@@ -5,10 +5,7 @@
             <ion-nav-back-button class="button-icon ion-arrow-left-c">
             </ion-nav-back-button>
         </ion-nav-bar>
-        <ion-nav-buttons side="left">
-            <button class="button button-icon button-clear ion-navicon" ng-if="!hideNavButton" ng-click="toggleLeft()">
-            </button>
-        </ion-nav-buttons>
+
         <ion-nav-view animation="slide-left-right" name="menuContent"></ion-nav-view>
     </ion-side-menu-content>
 
@@ -26,6 +23,8 @@
                     Filter</a>
                 <a href="#/menu/about" class="item item-icon-left" menu-close>
                     <i class="icon ion-ios7-information"></i>About</a>
+                <a href="#/menu/years" class="item item-icon-left" menu-close>
+                    <i class="icon ion-calendar"></i>Years</a>
             </ul>
         </ion-content>
     </ion-side-menu>

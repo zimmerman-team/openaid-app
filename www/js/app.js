@@ -105,8 +105,7 @@ angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', '
             url: "/about",
             views: {
               'menuContent' :{
-                templateUrl: "templates/about.html",
-                controller: "AboutCtrl"
+                templateUrl: "templates/about.html"
               }
             }
           })
@@ -116,6 +115,15 @@ angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', '
               'menuContent' :{
                 templateUrl: "templates/menu-filter.html",
                 controller: "FilterCtrl"
+              }
+            }
+          })
+          .state('menu.years', {
+            url: "/years",
+            views: {
+              'menuContent' :{
+                templateUrl: "templates/menu-years.html",
+                controller: "YearCtrl"
               }
             }
           })

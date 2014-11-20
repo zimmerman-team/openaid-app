@@ -1,4 +1,25 @@
 angular.module('openaid.directives', ['openaid.d3'])
+    .directive('disableSideMenu', [
+        '$ionicSideMenuDelegate',
+        function ($ionicSideMenuDelegate) {
+            return {
+                restrict: 'A',
+                link: function (scope, element) {
+                    element.on('touch', function () {
+                        scope.$apply(function () {
+                            $ionicSideMenuDelegate.canDragContent(false);
+                        });
+                    });
+
+                    element.on('release', function () {
+                        scope.$apply(function () {
+                            $ionicSideMenuDelegate.canDragContent(true);
+                        });
+                    });
+                }
+            };
+        }
+    ])
     .directive('d3Bars', ['$window', '$timeout', 'd3Service',
         function ($window, $timeout, d3Service) {
             return {
@@ -15,6 +36,8 @@ angular.module('openaid.directives', ['openaid.d3'])
                         var margin = parseInt(attrs.margin) || 20,
                             barHeight = parseInt(attrs.barHeight) || 20,
                             barPadding = parseInt(attrs.barPadding) || 5;
+
+                        var animation = attrs.animation;
 
                         var svg = d3.select(ele[0])
                             .append('svg')
@@ -46,7 +69,7 @@ angular.module('openaid.directives', ['openaid.d3'])
                                     color = d3.scale.category20(),
                                     xScale = d3.scale.linear()
                                         .domain([0, d3.max(data, function (d) {
-                                            return d.score;
+                                            return d.value;
                                         })])
                                         .range([0, width]);
 
@@ -66,12 +89,12 @@ angular.module('openaid.directives', ['openaid.d3'])
                                         return i * (barHeight + barPadding);
                                     })
                                     .attr('fill', function (d) {
-                                        return color(d.score);
+                                        return color(d.value);
                                     })
                                     .transition()
                                     .duration(1000)
                                     .attr('width', function (d) {
-                                        return xScale(d.score);
+                                        return xScale(d.value);
                                     });
                                 svg.selectAll('text')
                                     .data(data)
@@ -84,7 +107,7 @@ angular.module('openaid.directives', ['openaid.d3'])
                                     })
                                     .attr('x', 15)
                                     .text(function (d) {
-                                        return d.name + " (scored: " + d.score + ")";
+                                        return d.text;
                                     });
                             }, 200);
                         };

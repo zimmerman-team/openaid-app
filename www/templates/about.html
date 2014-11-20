@@ -1,5 +1,9 @@
 <ion-view title="About" hide-back-button="{{hideBackButton}}">
   <ion-content>
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-navicon" ng-if="!hideNavButton" ng-click="toggleLeft()">
+      </button>
+    </ion-nav-buttons>
     <div class="card">
       <div class="item item-text-wrap">
         Testing one two three

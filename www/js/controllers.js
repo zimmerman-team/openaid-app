@@ -1,11 +1,24 @@
 angular.module('openaid.controllers', ['openaid.d3'])
-    .controller('AboutCtrl', function($scope) {
-        $scope.data = [
-            {name: "Greg", score: 98},
-            {name: "Ari", score: 96},
-            {name: 'Q', score: 75},
-            {name: "Loser", score: 48}
-        ];
+    .controller('YearCtrl', function($scope, ActivityAggregate, $filter) {
+        var years = ActivityAggregate.get({
+            group_by: "year",
+            aggregation_key: "disbursement"
+        }, function(){
+            console.log(years);
+            var parsed = [];
+            for (year in years){
+                if(years[year].group_field >= 2000 && years[year].aggregation_field)
+                    parsed.push({
+                        key: years[year].group_field,
+                        value: years[year].aggregation_field,
+                        text:  years[year].group_field + " (" + $filter('currency')(years[year].aggregation_field,"EUR ")+")"
+
+                    })
+
+            }
+            console.log(parsed);
+            $scope.data = parsed;
+        });
     })
     .controller('MainCtrl', function($rootScope, $scope, $ionicSideMenuDelegate, LocalStorage) {
         $scope.hideBackButton = true;
