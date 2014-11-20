@@ -1,10 +1,37 @@
 angular.module('openaid.controllers', ['openaid.d3'])
-    .controller('YearCtrl', function($scope, ActivityAggregate, $filter) {
+    .controller('AboutCtrl', function($scope) {
+        $scope.onlineActivate = function () {
+            if(ionic.Platform.isIOS()){
+                window.location.href = "https://www.vpl.me/~vpl/openaidapp/app/ios/www";
+            }
+            else if(ionic.Platform.isAndroid()){
+                window.location.href = "https://www.vpl.me/~vpl/openaidapp/app/android/www";
+            }
+            else if(ionic.Platform.isWebView()){
+                window.location.href = "https://www.vpl.me/~vpl/openaidapp/app/web/www";
+            }
+        }
+    })
+    .controller('YearCtrl', function($scope, $http, ActivityAggregate, $filter, $state) {
+
+        // Load from file so the user doesn't stare at a white page
+        $http.get('data/year-disbursement.json').success(function(data) {
+            $scope.data = parseData(data);
+        });
+
+        // Replace with data from OIPA
         var years = ActivityAggregate.get({
             group_by: "year",
             aggregation_key: "disbursement"
         }, function(){
-            console.log(years);
+            $scope.data = parseData(years);
+        });
+
+        $scope.yearPressed = function(item){
+            $state.go("menu.year", {year: item.key}, {inherit:true});
+        };
+
+        var parseData = function(years){
             var parsed = [];
             for (year in years){
                 if(years[year].group_field >= 2000 && years[year].aggregation_field)
@@ -13,12 +40,13 @@ angular.module('openaid.controllers', ['openaid.d3'])
                         value: years[year].aggregation_field,
                         text:  years[year].group_field + " (" + $filter('currency')(years[year].aggregation_field,"EUR ")+")"
 
-                    })
-
+                    });
             }
-            console.log(parsed);
-            $scope.data = parsed;
-        });
+            return parsed;
+        };
+    })
+    .controller('YearDetailCtrl', function($scope, $stateParams){
+        $scope.year = $stateParams.year;
     })
     .controller('MainCtrl', function($rootScope, $scope, $ionicSideMenuDelegate, LocalStorage) {
         $scope.hideBackButton = true;

@@ -74,6 +74,7 @@ angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', '
       $cordovaSplashscreen.hide()
     }, 1000)
 
+
   });
 })
 
@@ -105,7 +106,8 @@ angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', '
             url: "/about",
             views: {
               'menuContent' :{
-                templateUrl: "templates/about.html"
+                templateUrl: "templates/about.html",
+                controller: "AboutCtrl"
               }
             }
           })
@@ -119,11 +121,20 @@ angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', '
             }
           })
           .state('menu.years', {
-            url: "/years",
+            url: "/year",
             views: {
               'menuContent' :{
-                templateUrl: "templates/menu-years.html",
+                templateUrl: "templates/menu-year.html",
                 controller: "YearCtrl"
+              }
+            }
+          })
+          .state('menu.year', {
+            url: "/year/:year",
+            views: {
+              'menuContent' :{
+                templateUrl: "templates/year-detail.html",
+                controller: "YearDetailCtrl"
               }
             }
           })

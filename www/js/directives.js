@@ -37,7 +37,9 @@ angular.module('openaid.directives', ['openaid.d3'])
                             barHeight = parseInt(attrs.barHeight) || 20,
                             barPadding = parseInt(attrs.barPadding) || 5;
 
-                        var animation = attrs.animation;
+                        var animation = true;
+
+                        var transitionDuration = parseInt(attrs.transitionDuration) || 1000;
 
                         var svg = d3.select(ele[0])
                             .append('svg')
@@ -55,15 +57,18 @@ angular.module('openaid.directives', ['openaid.d3'])
 
                         scope.$watch('data', function (newData) {
                             scope.render(newData);
+
                         }, true);
 
                         scope.render = function (data) {
                             svg.selectAll('*').remove();
 
                             if (!data) return;
-                            if (renderTimeout) clearTimeout(renderTimeout);
 
-                            renderTimeout = $timeout(function () {
+
+                            //if (renderTimeout) clearTimeout(renderTimeout);
+
+                            //renderTimeout = $timeout(function () {
                                 var width = d3.select(ele[0])[0][0].offsetWidth - margin,
                                     height = scope.data.length * (barHeight + barPadding),
                                     color = d3.scale.category20(),
@@ -75,7 +80,7 @@ angular.module('openaid.directives', ['openaid.d3'])
 
                                 svg.attr('height', height);
 
-                                svg.selectAll('rect')
+                                var rects = svg.selectAll('rect')
                                     .data(data)
                                     .enter()
                                     .append('rect')
@@ -83,7 +88,6 @@ angular.module('openaid.directives', ['openaid.d3'])
                                         return scope.onClick({item: d});
                                     })
                                     .attr('height', barHeight)
-                                    .attr('width', 140)
                                     .attr('x', Math.round(margin / 2))
                                     .attr('y', function (d, i) {
                                         return i * (barHeight + barPadding);
@@ -92,7 +96,7 @@ angular.module('openaid.directives', ['openaid.d3'])
                                         return color(d.value);
                                     })
                                     .transition()
-                                    .duration(1000)
+                                    .duration(2000)
                                     .attr('width', function (d) {
                                         return xScale(d.value);
                                     });
@@ -100,7 +104,10 @@ angular.module('openaid.directives', ['openaid.d3'])
                                     .data(data)
                                     .enter()
                                     .append('text')
-                                    .attr('fill', '#fff')
+                                    .on('click', function (d, i) {
+                                        return scope.onClick({item: d});
+                                    })
+                                    .attr('fill', '#000')
                                     .attr('font-size', '12px')
                                     .attr('y', function (d, i) {
                                         return i * (barHeight + barPadding) + 15;
@@ -109,7 +116,7 @@ angular.module('openaid.directives', ['openaid.d3'])
                                     .text(function (d) {
                                         return d.text;
                                     });
-                            }, 200);
+                            //}, 200);
                         };
                     });
                 }
