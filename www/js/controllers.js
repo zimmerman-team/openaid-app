@@ -1,6 +1,15 @@
-angular.module('starter.controllers', ['ionic'])
+angular.module('openaid.controllers', ['openaid.d3'])
+    .controller('AboutCtrl', function($scope) {
+        $scope.data = [
+            {name: "Greg", score: 98},
+            {name: "Ari", score: 96},
+            {name: 'Q', score: 75},
+            {name: "Loser", score: 48}
+        ];
+    })
     .controller('MainCtrl', function($rootScope, $scope, $ionicSideMenuDelegate, LocalStorage) {
         $scope.hideBackButton = true;
+        $scope.hideNavButton = false;
 
         $scope.toggleLeft = function() {
             $ionicSideMenuDelegate.toggleLeft();
@@ -50,6 +59,7 @@ angular.module('starter.controllers', ['ionic'])
     })
     .controller('ActivitiesCtrl', function ($scope, $ionicModal, Activities, Regions, LocalStorage) {
         $scope.hideBackButton = true;
+
         $scope.queryParams = {
             limit: 50
         };
@@ -76,29 +86,31 @@ angular.module('starter.controllers', ['ionic'])
             if (search){
                 $scope.queryParams.query = search;
             }
+
+            $scope.meta = Activities.meta($scope.queryParams,function(){
+                $scope.totalCount = $scope.meta.total_count;
+            });
         };
 
         $scope.activities = [];
 
         $scope.loadActivities = function(queryParams) {
+            $scope.loadingFinished = false;
+            queryParams.offset = $scope.activities.length;
 
-            $scope.meta = Activities.meta(queryParams,function(){
-                $scope.totalCount = $scope.meta.total_count;
-                queryParams.offset = $scope.activities.length;
+            var remainingActivities = $scope.totalCount-$scope.activities.length;
 
-                var remainingActivities = $scope.totalCount-$scope.activities.length;
-
-                if (remainingActivities < 50){
-                    queryParams.limit = remainingActivities;
-                } else {
-                    queryParams.limit = 50;
-                }
-            });
+            if (remainingActivities < 50){
+                $scope.queryParams.limit = remainingActivities;
+            } else {
+                $scope.queryParams.limit = 50;
+            }
 
             var results = Activities.query(queryParams, function () {
                 // on complete
                 // $scope.activities array is appended with new entries once data has been loaded by ngresource
                 $scope.activities = $scope.activities.concat(results);
+                $scope.loadingFinished = true;
             });
         };
 
@@ -110,7 +122,7 @@ angular.module('starter.controllers', ['ionic'])
         });
 
         $scope.loadMoreActivities = function () {
-            $scope.queryParams.offset = $scope.currentIndex;
+            $scope.queryParams.offset = $scope.activities.length;
             $scope.loadActivities($scope.queryParams);
             $scope.$broadcast('scroll.infiniteScrollComplete');
         };
@@ -119,6 +131,14 @@ angular.module('starter.controllers', ['ionic'])
             $scope.hideSearch();
         });
 
+        $scope.resetFilters = function (){
+            LocalStorage.set("filterRegion","");
+            LocalStorage.set("filterSearch","");
+            LocalStorage.set("filterCountry","");
+            LocalStorage.set("filterSector","");
+            $scope.reloadActivities();
+        };
+
         $scope.reloadActivities = function () {
             $scope.activities = [];
             $scope.currentIndex = 0;
@@ -126,11 +146,10 @@ angular.module('starter.controllers', ['ionic'])
             $scope.queryParams.offset = 0;
             updateQueryParams();
             $scope.loadActivities($scope.queryParams);
-        }
+        };
         $scope.moreDataCanBeLoaded = function (){
             return $scope.activities.length < $scope.meta.total_count;
         }
-
     })
     .controller('ActivityDetailCtrl', function ($rootScope, $scope, $stateParams, $ionicNavBarDelegate, $ionicSideMenuDelegate, Activities, $ionicPopup, $ionicLoading) {
         $scope.hideBackButton = false;
@@ -164,12 +183,9 @@ angular.module('starter.controllers', ['ionic'])
         setTimeout(function() {
             if(!loaded){
                     $ionicLoading.hide();
-                    var alertPopup = $ionicPopup.alert({
+                    $ionicPopup.alert({
                     title: 'Connection failed',
                     template: 'Can not connect to server'
-                });
-                alertPopup.then(function(res) {
-                    console.log('Thank you for not eating my delicious ice cream cone');
                 });
             }
         }, 3000)
@@ -208,46 +224,54 @@ angular.module('starter.controllers', ['ionic'])
         // by retrieving the meta data.
         var getNumberActivities = function(){
             var params = updateQueryParams();
-            var meta = Activities.meta(params, function(){
-               $scope.acts = meta.total_count;
+            var count = Activities.meta(params, function(){
+                console.log(count);
+               $scope.acts = count.total_count;
             })
         };
+
+
 
         getNumberActivities();
 
         // On startup, get all filterOptions from the API, add
         // them to the scope and then select the one in memory if applicable
-        var filterOptions = FilterOptions.all({}, function () {
+        var filterOptions = FilterOptions.get(function () {
+            $scope.filterForm = {
+                region: "No filter",
+                country: "No filter",
+                sector: "No filter"
+            };
+
             $scope.regions = filterOptions.regions;
             $scope.countries = filterOptions.countries;
             $scope.sectors = filterOptions.sectors;
 
             var region = LocalStorage.get('filterRegion');
             if(region){
-                $scope.region = filterOptions.regions[region].name;
-            }
-            else{
-                $scope.region = "No filter";
+                $scope.filterForm.region = filterOptions.regions[region].name;
             }
 
             var country = LocalStorage.get('filterCountry');
             if(country){
-                $scope.country = filterOptions.countries[country].name;
-            }
-            else {
-                $scope.country = "No filter";
+                $scope.filterForm.country = filterOptions.countries[country].name;
             }
 
             var sector = LocalStorage.get('filterSector');
-            console.log("sector: " + sector);
             if(sector){
-                $scope.sector = filterOptions.sectors[sector].name;
-            }
-            else{
-                $scope.sector = "No filter";
+                $scope.filterForm.sector = filterOptions.sectors[sector].name;
             }
         });
 
+        $scope.resetFilters = function(){
+            $scope.filterForm.region = "No filter";
+            LocalStorage.set("filterRegion","");
+            $scope.filterForm.country = "No filter";
+            LocalStorage.set("filterCountry","");
+            $scope.filterForm.sector = "No filter";
+            LocalStorage.set("filterSector","");
+            getNumberActivities();
+        };
 
         // Converts name to code (e.g. Netherlands to NL)
         // or returns an empty string indicating that no filter is applied.
@@ -304,7 +328,7 @@ angular.module('starter.controllers', ['ionic'])
                             return $ionicSideMenuDelegate.getOpenRatio();
                         }, function (ratio) {
                             // Set the transparency of the fade bar
-                            $element[0].style.opacity = Math.abs(ratio);
+                            $element[0].style.width =  (200 * Math.abs(ratio))+"px";
                         });
                     });
                 }

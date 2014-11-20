@@ -5,14 +5,17 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', 'openaid.directives','ngCordova'])
+    .constant("APPINFO", {
+      "OIPA_URL": "http://dev.oipa.openaidsearch.org/api/v3"
+    })
 
-.run(function($ionicPlatform, $rootScope, $window, $ionicModal) {
+.run(function($ionicPlatform, $rootScope, $window, $ionicModal, LocalStorage, $cordovaSplashscreen) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
     }
     if(window.StatusBar) {
       StatusBar.styleBlackTranslucent();
@@ -20,6 +23,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     if(ionic.Platform.isAndroid()){
       //alert('android!');
     }
+
+    LocalStorage.get();
 
     $ionicModal.fromTemplateUrl('templates/modal-internet.html', {
       scope: $rootScope,
@@ -65,6 +70,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       });
     }, false);
 
+    setTimeout(function() {
+      $cordovaSplashscreen.hide()
+    }, 1000)
+
   });
 })
 
@@ -96,7 +105,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             url: "/about",
             views: {
               'menuContent' :{
-                templateUrl: "templates/about.html"
+                templateUrl: "templates/about.html",
+                controller: "AboutCtrl"
               }
             }
           })
@@ -130,7 +140,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 
       // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/menu/home');
+  $urlRouterProvider.otherwise('/menu/activities');
 
 });
 

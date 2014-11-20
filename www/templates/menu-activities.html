@@ -6,7 +6,7 @@
   </ion-nav-buttons>
 
   <ion-content>
-          <div ng-if="activities.length == 0" class="card">
+          <div ng-if="activities.length == 0 && loadingFinished" class="card">
               <div class="item item-text-wrap text-center">
                   <i class="icon ion-ios7-search-strong oip-icon-center"></i>
                   <p>
@@ -15,8 +15,19 @@
                   <p ng-if="search">
                       You have a search query ("{{search}}") enabled. This could impact results.
                   </p>
+                  <button class="button button-stable oip-center-button" ng-click="resetFilters()">
+                      Reset all filters
+                  </button>
               </div>
           </div>
+      <div ng-if="!loadingFinished" class="card">
+          <div class="item item-text-wrap text-center">
+             <i class="icon ion-loading-c oip-icon-center"></i>
+              <p>
+                  Loading. Please wait.
+              </p>
+          </div>
+      </div>
     <div class="list">
       <a class="item my-item"
            collection-repeat="activity in activities"

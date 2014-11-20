@@ -1,0 +1,19 @@
+
+<ion-view title="Years" hide-back-button="true">
+  <ion-content>
+      <ion-nav-buttons side="left">
+          <button class="button button-icon button-clear ion-navicon" ng-if="!hideNavButton" ng-click="toggleLeft()">
+          </button>
+      </ion-nav-buttons>
+      <p>Testing years/disbursement</p>
+      <div ng-if="!data">
+          <div class="text-center">
+              <i class="icon ion-loading-c oip-icon-center"></i>
+              <p>
+                  Retrieving data
+              </p>
+          </div>
+      </div>
+      <div d3-bars data="data" bar-height="40" bar-padding="5"></div>
+  </ion-content>
+</ion-view>

@@ -7,14 +7,14 @@ var tastypieDataTransformer = function ($http) {
     ])
 };
 
-angular.module('starter.services', ['ngResource'])
+angular.module('openaid.services', ['ngResource'])
 
 /**
  * A simple example service that returns some data.
  */
-    .factory('Activities', ['$http','$resource', function ($http, $resource) {
+    .factory('Activities', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/activities/:Id/?format=json",
+            APPINFO.OIPA_URL + "/activities/:Id/?format=json",
             {Id: "@Id"},
             {
                 query: {
@@ -22,14 +22,15 @@ angular.module('starter.services', ['ngResource'])
                     isArray: true,
                     cache: true,
                     params: {
-                        'select_fields': "id,titles"
+                        'select_fields': "id,titles",
+                        count: false
                     },
                     transformResponse: tastypieDataTransformer($http)
                 },
                 meta: {
                     method: 'GET',
                     params: {
-                        'select_fields': ""
+                        'select_fields': "none"
                     },
                     transformResponse: $http.defaults.transformResponse.concat([
                         function (data, headersGetter) {
@@ -45,9 +46,9 @@ angular.module('starter.services', ['ngResource'])
             }
         );
     }])
-    .factory('Regions', ['$http','$resource', function ($http, $resource) {
+    .factory('Regions', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/regions/?format=json",
+            APPINFO.OIPA_URL + "/regions/?format=json",
             {limit: 0},
             {
                 all: {
@@ -62,9 +63,9 @@ angular.module('starter.services', ['ngResource'])
             }
         );
     }])
-    .factory('Countries', ['$http','$resource', function ($http, $resource) {
+    .factory('Countries', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/countries/?format=json",
+            APPINFO.OIPA_URL + "/countries/?format=json",
             {limit: 0},
             {
                 all: {
@@ -79,9 +80,9 @@ angular.module('starter.services', ['ngResource'])
             }
         );
     }])
-    .factory('Sectors', ['$http','$resource', function ($http, $resource) {
+    .factory('Sectors', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/sectors/?format=json",
+            APPINFO.OIPA_URL + "/sectors/?format=json",
             {limit: 0},
             {
                 all: {
@@ -96,9 +97,33 @@ angular.module('starter.services', ['ngResource'])
             }
         );
     }])
-    .factory('FilterOptions', ['$http','$resource', function ($http, $resource) {
+    .factory('ActivityCount', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://oipa.vpl.me/api/v3/activity-filter-options/?format=json",
+            APPINFO.OIPA_URL + "/activity-count/?format=json",
+            {},
+            {
+                get: {
+                    method: 'GET',
+                    cache: true
+                }
+            }
+        );
+    }])
+    .factory('ActivityAggregate', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
+        return $resource(
+            APPINFO.OIPA_URL + "/activity-aggregate-any/?format=json",
+            {},
+            {
+                get: {
+                    method: 'GET',
+                    cache: true
+                }
+            }
+        );
+    }])
+    .factory('FilterOptions', ['$http','$resource','APPINFO','LocalStorage', function ($http, $resource, APPINFO, LocalStorage) {
+        var resource = $resource(
+            APPINFO.OIPA_URL + "/activity-filter-options/?format=json",
             {},
             {
                 all: {
@@ -107,6 +132,34 @@ angular.module('starter.services', ['ngResource'])
                 }
             }
         );
+        var filterOptions;
+
+        return {
+            get: function(func){
+                var needLoad = false;
+
+                if(!filterOptions){
+                    var cachedFilterOptions = LocalStorage.getObject("filterOptions");
+
+                    if (Object.keys(cachedFilterOptions).length !== 0){
+                        filterOptions = cachedFilterOptions;
+                    }
+                    else {
+                        needLoad = true;
+                        filterOptions = resource.all(function(){
+                            LocalStorage.setObject("filterOptions",filterOptions);
+                            func();
+                        });
+                    }
+                }
+                if(!needLoad)
+                {
+                    setTimeout(func, 50);
+                }
+                return filterOptions;
+            }
+        };
+
     }])
     .factory('LocalStorage', ['$window', function($window) {
         return {

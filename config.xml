@@ -14,8 +14,8 @@
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="BackupWebStorage" value="none"/>
   <preference name="StatusBarOverlaysWebView" value="true" />
-  <preference name="StatusBarStyle" value="blacktranslucent" />
-
+  <preference name="StatusBarStyle" value="lightcontent" />
+  <preference name="AutoHideSplashScreen" value="false" />
   <preference name="KeyboardDisplayRequiresUserAction" value="false" />
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
