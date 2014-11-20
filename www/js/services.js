@@ -12,9 +12,9 @@ angular.module('openaid.services', ['ngResource'])
 /**
  * A simple example service that returns some data.
  */
-    .factory('Activities', ['$http','$resource', function ($http, $resource) {
+    .factory('Activities', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://dev.oipa.openaidsearch.org/api/v3/activities/:Id/?format=json",
+            APPINFO.OIPA_URL + "/activities/:Id/?format=json",
             {Id: "@Id"},
             {
                 query: {
@@ -46,9 +46,9 @@ angular.module('openaid.services', ['ngResource'])
             }
         );
     }])
-    .factory('Regions', ['$http','$resource', function ($http, $resource) {
+    .factory('Regions', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://dev.oipa.openaidsearch.org/api/v3/regions/?format=json",
+            APPINFO.OIPA_URL + "/regions/?format=json",
             {limit: 0},
             {
                 all: {
@@ -63,9 +63,9 @@ angular.module('openaid.services', ['ngResource'])
             }
         );
     }])
-    .factory('Countries', ['$http','$resource', function ($http, $resource) {
+    .factory('Countries', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://dev.oipa.openaidsearch.org/api/v3/countries/?format=json",
+            APPINFO.OIPA_URL + "/countries/?format=json",
             {limit: 0},
             {
                 all: {
@@ -80,9 +80,9 @@ angular.module('openaid.services', ['ngResource'])
             }
         );
     }])
-    .factory('Sectors', ['$http','$resource', function ($http, $resource) {
+    .factory('Sectors', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://dev.oipa.openaidsearch.org/api/v3/sectors/?format=json",
+            APPINFO.OIPA_URL + "/sectors/?format=json",
             {limit: 0},
             {
                 all: {
@@ -97,9 +97,9 @@ angular.module('openaid.services', ['ngResource'])
             }
         );
     }])
-    .factory('ActivityCount', ['$http','$resource', function ($http, $resource) {
+    .factory('ActivityCount', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
         return $resource(
-            "http://dev.oipa.openaidsearch.org/api/v3/activity-count/?format=json",
+            APPINFO.OIPA_URL + "/activity-count/?format=json",
             {},
             {
                 get: {
@@ -109,9 +109,21 @@ angular.module('openaid.services', ['ngResource'])
             }
         );
     }])
-    .factory('FilterOptions', ['$http','$resource','LocalStorage', function ($http, $resource, LocalStorage) {
+    .factory('ActivityAggregate', ['$http','$resource', 'APPINFO', function ($http, $resource, APPINFO) {
+        return $resource(
+            APPINFO.OIPA_URL + "/activity-aggregate-any/?format=json",
+            {},
+            {
+                get: {
+                    method: 'GET',
+                    cache: true
+                }
+            }
+        );
+    }])
+    .factory('FilterOptions', ['$http','$resource','APPINFO','LocalStorage', function ($http, $resource, APPINFO, LocalStorage) {
         var resource = $resource(
-            "http://dev.oipa.openaidsearch.org/api/v3/activity-filter-options/?format=json",
+            APPINFO.OIPA_URL + "/activity-filter-options/?format=json",
             {},
             {
                 all: {

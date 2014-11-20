@@ -6,6 +6,9 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('openaid', ['ionic', 'openaid.controllers', 'openaid.services', 'openaid.directives','ngCordova'])
+    .constant("APPINFO", {
+      "OIPA_URL": "http://dev.oipa.openaidsearch.org/api/v3"
+    })
 
 .run(function($ionicPlatform, $rootScope, $window, $ionicModal, LocalStorage, $cordovaSplashscreen) {
   $ionicPlatform.ready(function() {
