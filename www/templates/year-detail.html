@@ -5,5 +5,22 @@
         <h1 class="text-center">{{year}}</h1>
       </div>
     </div>
+    <div class="card oip-show-hide" ng-show="activityYear[year]">
+      <div class="item item-text-wrap">
+        <h1 class="text-center">{{activityYear[year]}} activities</h1>
+      </div>
+    </div>
+  <div class="card oip-show-hide" ng-show="disbursement">
+    <div class="item item-text-wrap">
+      <h1 class="text-center">{{disbursement | currency : $ }}</h1>
+    </div>
+  </div>
+  <div class="card">
+    <div class="item item-text-wrap">
+      <h1 class="text-center">test</h1>
+    </div>
+  </div>
+
+
   </ion-content>
 </ion-view>

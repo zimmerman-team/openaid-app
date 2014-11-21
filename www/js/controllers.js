@@ -45,7 +45,24 @@ angular.module('openaid.controllers', ['openaid.d3'])
             return parsed;
         };
     })
-    .controller('YearDetailCtrl', function($scope, $stateParams){
+    .controller('YearDetailCtrl', function($scope, $stateParams, ActivityCount, ActivityAggregate){
+        $scope.activityYear = ActivityCount.get({
+            group_by: "year"
+        });
+
+        $scope.activityDisbursement = ActivityAggregate.get({
+            group_by: "year",
+            aggregation_key: "disbursement"
+        }, function (){
+            var years = $scope.activityDisbursement;
+            for(year in years){
+                if(years[year].group_field == $stateParams.year){
+                    $scope.disbursement = years[year].aggregation_field;
+                }
+            }
+        });
+
+
         $scope.year = $stateParams.year;
     })
     .controller('MainCtrl', function($rootScope, $scope, $ionicSideMenuDelegate, LocalStorage) {
